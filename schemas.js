@@ -1,7 +1,14 @@
 const BaseJoi = require("joi")
 const sanitizeHtml = require("sanitize-html")
 
-const extension = (joi) => ({
+```
+/**
+ * Extends Joi schema with a custom string validation rule for escaping HTML
+ * @param {Object} joi - The Joi validation library object
+ * @returns {Object} An object containing the custom extension configuration
+ */
+
+```const extension = (joi) => ({
     type: "string",
     base: joi.string(),
     messages: {

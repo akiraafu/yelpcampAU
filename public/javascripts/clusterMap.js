@@ -8,6 +8,12 @@ const map = new mapboxgl.Map({
 
 map.addControl(new mapboxgl.NavigationControl())
 
+/**
+ * Sets up a Mapbox GL JS map with clustered campground data and interactive features
+ * @param {Object} map - The Mapbox GL JS map instance
+ * @param {Object} campgrounds - GeoJSON data of campground locations
+ * @returns {void} This function doesn't return a value, it modifies the map instance
+ */
 map.on("load", () => {
     // console.log("map loaded!")
     // Add a new source from our GeoJSON data and
@@ -78,6 +84,14 @@ map.on("load", () => {
             layers: ["clusters"],
         })
         const clusterId = features[0].properties.cluster_id
+        ```
+        /**
+         * Expands a cluster on the map to a zoomed-in view of its contents
+         * @param {string} clusterId - The ID of the cluster to expand
+         * @param {Function} callback - Callback function that receives error and zoom level
+         * @returns {void} This method doesn't return a value
+         */
+        ```
         map.getSource("campgrounds").getClusterExpansionZoom(clusterId, (err, zoom) => {
             if (err) return
 
@@ -93,6 +107,13 @@ map.on("load", () => {
     // the location of the feature, with
     // description HTML from its properties.
     map.on("click", "unclustered-point", (e) => {
+        /**
+         * Adds a mouseenter event listener to clusters on the map
+         * @param {string} "mouseenter" - The event type to listen for
+         * @param {string} "clusters" - The layer ID to apply the event listener to
+         * @param {Function} callback - The function to execute when the event occurs
+         * @returns {undefined} This method does not return a value
+         */
         // console.log("uncluster point clicked!")
         const { popUpMarkup } = e.features[0].properties
         const coordinates = e.features[0].geometry.coordinates.slice()
@@ -111,6 +132,14 @@ map.on("load", () => {
         // console.log("mousing over a cluster")
         map.getCanvas().style.cursor = "pointer"
     })
+    ```
+    /**
+     * Handles the mouseleave event for cluster layers on the map
+     * @param {string} "mouseleave" - The event type to listen for
+     * @param {string} "clusters" - The name of the layer to apply the event listener to
+     * @returns {void} This method doesn't return a value
+     */
+    ```
     map.on("mouseleave", "clusters", () => {
         map.getCanvas().style.cursor = ""
     })

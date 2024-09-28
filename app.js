@@ -30,6 +30,11 @@ mongoose.connect(dbUrl)
 
 const db = mongoose.connection
 db.on("error", console.error.bind(console, "connection error:"))
+/**
+ * Establishes a one-time connection to the database and logs a success message
+ * @param {function} callback - The function to be executed once the database connection is open
+ * @returns {void} This method doesn't return a value
+ */
 db.once("open", () => {
     console.log("Database connected")
 })
@@ -57,6 +62,11 @@ const store = MongoStore.create({
     touchAfter: 24 * 60 * 60,
     crypto: { secret },
 })
+/**
+ * Attaches an error event handler to the store object
+ * @param {Function} callback - The function to be executed when an error occurs in the session store
+ * @returns {void} This method does not return a value
+ */
 store.on("error", function (e) {
     console.log("session store error")
 })
@@ -131,6 +141,13 @@ app.use(
 
 app.use(passport.initialize())
 app.use(passport.session())
+/**
+ * Middleware function to set up local variables for the response
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {void} This function doesn't return anything
+ */
 passport.use(new LocalStrategy(User.authenticate()))
 
 passport.serializeUser(User.serializeUser())
@@ -143,6 +160,12 @@ app.use((req, res, next) => {
     next()
 })
 
+/**
+ * Handles GET request to create a fake user
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} Newly created user object
+ */
 app.get("/fakeuser", async (req, res) => {
     const user = new User({ email: "akiraaa@gmail.com", username: "akiraaa" })
     const newUser = await User.register(user, "chicken")
@@ -151,8 +174,21 @@ app.get("/fakeuser", async (req, res) => {
 
 app.use("/", userRoutes)
 app.use("/campgrounds", campgroundsRoutes)
+/**
+ * Middleware function to handle all unmatched routes
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {void} Passes control to the next middleware with an ExpressError
+ */
 app.use("/campgrounds/:id/reviews", reviewsRoutes)
 
+/**
+ * Handles GET requests for the home route
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {void} Renders the home view
+ */
 app.get("/", (req, res) => {
     res.render("home")
 })
@@ -161,6 +197,14 @@ app.all("*", (req, res, next) => {
     next(new ExpressError("Page Not Found", 404))
 })
 
+/**
+ * Error handling middleware for Express application
+ * @param {Error} err - The error object caught by the middleware
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {void} Renders an error page with the error details
+ */
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err
     if (!err.message) err.message = "Oh no, Something went wrong!"
@@ -170,6 +214,11 @@ app.use((err, req, res, next) => {
 })
 
 const port = process.env.PORT || 3000
+/**
+ * Starts the server and listens for incoming connections on the specified port
+ * @param {number} port - The port number on which the server will listen
+ * @returns {void} This method doesn't return anything
+ */
 app.listen(port, () => {
     console.log(`Serving on port ${port}`)
 })
