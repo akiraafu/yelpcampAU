@@ -7,7 +7,17 @@
 
      // Loop over them and prevent submission
      Array.from(forms)
+         /**
+          * Adds form validation functionality to each form element
+          * @param {NodeList} forms - A collection of form elements to be processed
+          * @returns {void} This function does not return a value
+          */
          .forEach(function (form) {
+             /**
+              * Event listener for form submission
+              * @param {Event} event - The submit event object
+              * @returns {void} This function does not return a value
+              */
              form.addEventListener('submit', function (event) {
                  if (!form.checkValidity()) {
                      event.preventDefault()
